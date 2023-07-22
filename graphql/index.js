@@ -1,41 +1,18 @@
-import { ApolloServer } from "@apollo/server";
+import { ApolloServer } from '@apollo/server';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import {getDriver} from "../config/noe4j.config.js";
+import {typeDefs} from "./typeDefs.js";
 
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-
-const typeDefs = `#graphql
-
-
-type Query {
-  
-}
-
-type Mutation{
-
-}
-
-
-
-`;
-
-
-const resolvers = {
-    Query: {
-
-    },
-
-    Mutation: {
-
-    },
-};
-
-
-export  function graphql(httpServer){
-    return new ApolloServer({
-        typeDefs,
-        resolvers,
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
-    });
-
+/**
+ * @param httpServer
+ * @returns {ApolloServer<BaseContext>}
+ */
+export const getGraphQLServer=async () => {
+    const driver=getDriver()
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver  });
+   return new ApolloServer({
+        schema: await neoSchema.getSchema(),
+    })
 }
 
 

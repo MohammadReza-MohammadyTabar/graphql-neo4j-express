@@ -5,14 +5,15 @@ import {appRouter} from  './routes/app.route.js'
 import {errorHandlerMiddleware} from './middleware/error-handler.js'
 import {initDriver} from "./config/noe4j.config.js";
 import {neoUser, neoPass, noeUrl, port} from "./config/configs.config.js"
+import {expressMiddleware} from "@apollo/server/express4";
 
 
 
+await initDriver(noeUrl,neoUser,neoPass)
 const server =async ()=>{
     try {
-        await initDriver(noeUrl,neoUser,neoPass)
         app.listen(port,()=>{
-           console.log(`listening on port ${port}`)
+           console.log(`🚀 Server ready at http://localhost:${port}`)
 
        })
     }catch (e) {
@@ -21,6 +22,14 @@ const server =async ()=>{
     }
 }
 server()
+
+import {getGraphQLServer} from "./graphql/index.js";
+let graphQLServer=await getGraphQLServer()
+await graphQLServer.start()
+app.use(expressMiddleware(graphQLServer, {
+    context: async ({ req }) => ({ token: req.headers.token }),
+}),)
+
 app.use(appRouter)
 
 
