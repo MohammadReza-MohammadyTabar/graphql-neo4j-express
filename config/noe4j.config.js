@@ -3,9 +3,9 @@ import neo4j from 'neo4j-driver'
 
 let driver
 
-export async function initDriver(uri, username, password) {
+export async function initDriver(url, username, password) {
     driver = neo4j.driver(
-        uri,
+        url,
         neo4j.auth.basic(
             username,
             password
