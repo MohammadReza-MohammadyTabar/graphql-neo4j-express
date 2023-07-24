@@ -7,13 +7,12 @@ import {createUser, findUserByUsername} from "../service/auth.service.js";
 
 
 export async function login(req, res) {
-    // const drive = getDriver()
-    // const s= drive.session()
+
     const {password, username} = req.body
     if (!username || !password)
         throw new error.BadRequestError("Please provide username or password");
     const findUser = await findUserByUsername(username)
-    // await s.close()
+
 
     if (findUser.records.length!==0&&findUser.records[0].get('p').properties.password===password){
         const id=findUser.records.id
@@ -29,19 +28,18 @@ export async function login(req, res) {
 
 export async function signup(req, res) {
     try {
-        // const drive = getDriver()
-        // const s= drive.session()
+
         const {password, username} = req.body
         if (!username || !password)
             throw new error.BadRequestError("Please provide username or password");
         const findUser=await findUserByUsername(username)
         if (findUser.records.length===0){
             const user= await createUser(username,password)
-            // await s.close()
+
             res.status(StatusCodes.CREATED).send({"msg": "user Created"})
         }
         else {
-            // await s.close()
+
             throw new error.BadRequestError("user exists!")
         }
     }catch (e){

@@ -29,3 +29,6 @@ export async function closeDriver() {
     }
 }
 
+export function getSession(){
+    return getDriver().session()
+}

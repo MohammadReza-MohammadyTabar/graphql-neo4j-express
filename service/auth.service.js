@@ -1,10 +1,10 @@
-import {getDriver} from "../config/noe4j.config.js";
+import {getSession} from "../config/noe4j.config.js";
 
 
 export const findUserByUsername=async (username)=> {
     try{
-        const drive = getDriver()
-        const session= drive.session()
+
+        const session= getSession()
         const user= session.executeRead(tx => tx.run(
             'MATCH (p:Person  {username:$username}) RETURN p', {username}
         ))
@@ -17,12 +17,12 @@ export const findUserByUsername=async (username)=> {
 
 export const createUser=async (username,password)=>{
     try{
-        const drive = getDriver()
-        const session= drive.session()
+
+        const session= getSession()
          const user =session.executeWrite(tx => tx.run(
             'CREATE (p:Person {username:$username,password:$password}) RETURN p', {username,password}
         ))
-        await session.close()
+        session.close()
         return user
     }catch (e){
 
