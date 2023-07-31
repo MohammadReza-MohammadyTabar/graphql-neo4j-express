@@ -5,7 +5,7 @@ export const findUserByUsername=async (username)=> {
     try{
 
         const session= getSession()
-        const user= session.executeRead(tx => tx.run(
+        const user=await session.executeRead(tx => tx.run(
             'MATCH (p:Person  {username:$username}) RETURN p', {username}
         ))
         session.close()

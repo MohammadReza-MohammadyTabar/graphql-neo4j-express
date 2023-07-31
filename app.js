@@ -6,9 +6,10 @@ import {errorHandlerMiddleware} from './middleware/error-handler.js'
 import {initDriver} from "./config/noe4j.config.js";
 import {neoUser, neoPass, noeUrl, port} from "./config/configs.config.js"
 import {expressMiddleware} from "@apollo/server/express4";
+import {authenticationMiddleware} from "./middleware/auth.js";
 
 
-
+app.use(appRouter)
 await initDriver(noeUrl,neoUser,neoPass)
 const server =async ()=>{
     try {
@@ -21,16 +22,15 @@ const server =async ()=>{
         console.log(e)
     }
 }
-server()
 
+server()
 import {getGraphQLServer} from "./graphql/index.js";
 let graphQLServer=await getGraphQLServer()
 await graphQLServer.start()
-app.use(expressMiddleware(graphQLServer, {
+
+app.use(authenticationMiddleware,expressMiddleware(graphQLServer, {
     context: async ({ req }) => ({ token: req.headers.token }),
 }),)
-
-app.use(appRouter)
 
 
 
